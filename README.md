@@ -1,6 +1,10 @@
 # git-issues
 Issue tracking tool to store issues in your local directory. An addition to git that distributes issue tracking.
 
+## Dependencies
+* Git
+* LibXML
+
 ## Standard working draft
 Git issues is only meant to provide the core functionality, while things such as Github integration are their own
 repositories. The following documents the current theory on how to implement this functionality.
