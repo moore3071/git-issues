@@ -1,6 +1,11 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
+#include <fcntl.h>
 
 struct stat st = {0};
 
@@ -18,11 +23,31 @@ issues-create(const char * dir, const char * name, struct query_options options)
 				exit(EXIT_FAILURE);
 			}
 	}
-	get_issues_path(*dir, *name);
+	get_issues_path(dir, &name);
+	if(open(file, O_CREAT | O_WRONLY | O_EXCL, S_IRUSR | S_IWUSR)==-1)
+	{
+		perror("issues-create");
+		exit(EXIT_FAILURE);
+	}
 }
 
-void get_issues_path(char **dir. char** file)
+void get_issues_path(char *dir. char** file)
 {
-	if(*dir==NULL)
+	char * temp;
+	if(dir==NULL)
 		return;
+	if(*(dir+strlen(dir)-1)=='/')
+	{
+		temp = malloc(strlen(dir)+strlen(*file)+1);
+		strcpy(temp, dir);
+		strcat(temp, *file);
+		*file = temp;
+	} else
+	{
+		temp = malloc(strlen(dir)+strlen(*file)+2);
+		strcpy(temp, dir);
+		strcat(temp, "/");
+		strcat(temp, *file);
+		*file = temp;
+	}
 }
