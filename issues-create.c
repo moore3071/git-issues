@@ -7,7 +7,8 @@
 #include <string.h>
 #include <fcntl.h>
 
-struct stat st = {0};
+int issues_create(const char*, const char*, struct query_options);
+void get_issues_path(char*, char**);
 
 /* Creates an issues file named name in directory dir. The options in query_options will be used to decide what issues to get. If the options * are NULL, we'll account for that later. Sleep for now
 */
@@ -43,7 +44,8 @@ issues-create(const char * dir, const char * name, struct query_options options)
 	}
 }
 
-void get_issues_path(char *dir. char** file)
+void
+get_issues_path(char *dir, char** file)
 {
 	char * temp;
 	if(dir==NULL)
