@@ -14,9 +14,11 @@ struct stat st = {0};
 int
 issues-create(const char * dir, const char * name, struct query_options options)
 {
+	int old_err;
+	int created_dir_failed;
 	if(dir!=NULL)
 	{
-		if(mkdir(dir,0777)==-1)
+		if((created_dir_failed=mkdir(dir,0777))==-1)
 			if(errno != EEXIST)
 			{
 				perror("issues-create");
@@ -26,6 +28,16 @@ issues-create(const char * dir, const char * name, struct query_options options)
 	get_issues_path(dir, &name);
 	if(open(file, O_CREAT | O_WRONLY | O_EXCL, S_IRUSR | S_IWUSR)==-1)
 	{
+		if(dir!=NULL)
+		{
+			old_err = errno;
+			if(!created_dir_failed&&rmdir(dir)==-1)
+			{
+				perror("issues-create");
+				fprintf(stderr, "issues-create: please remove the directory %s\n", dir);
+			}
+			errno = old_err;
+		}
 		perror("issues-create");
 		exit(EXIT_FAILURE);
 	}
